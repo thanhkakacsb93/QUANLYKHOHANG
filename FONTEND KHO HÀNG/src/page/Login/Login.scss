@@ -1,0 +1,24 @@
+.page-login{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ant-form{
+    background-color: aqua;
+    border-radius: 10px;
+    padding: 10px 10px;
+    .ant-form-item-control-input-content{
+        display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+    .box-buton-login{
+        margin-bottom: 0px;
+    }
+    .ant-btn-primary{
+        color: black;
+        background-color: rgb(171, 171, 54);
+    }
+}
