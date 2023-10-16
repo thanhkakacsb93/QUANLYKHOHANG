@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 
-const signup = asyncHandler(async (req, res, next) => {
-    const { Username, Password, Role, Keyresetpassword } = req.body
+const signup = asyncHandler(async (req, res) => {
+    const { Username, Password, Role, Keyresetpassword, Expiry } = req.body
 
     const checkUsername = await modelUser.findOne({ Username })
     if (checkUsername) {
@@ -19,7 +19,8 @@ const signup = asyncHandler(async (req, res, next) => {
         Username,
         Password: hashpassword,
         Role,
-        Keyresetpassword
+        Keyresetpassword,
+        Expiry
     })
     await newUser.save()
     console.log(`${Username}`)
@@ -30,35 +31,81 @@ const signup = asyncHandler(async (req, res, next) => {
     })
 })
 
-// const login = asyncHandler(async (req, res, next) => {
-//     const { username, password } = req.body
+const login = asyncHandler(async (req, res) => {
+    const { Username, Password } = req.body
 
-//     const checkusername = await modelUser.findMany({ username })
-//     if (!checkusername) {
-//         res.status(400);
-//         throw new Error("username or password is wrong")
-//     }
-
-//     const checkpasssword = await bcrypt.compare(password, checkuser.hashpassword)
-//     if (!checkpasssword) {
-//         res.status(400);
-//         throw new Error("username or password is wrong")
-//     }
+    const checkuser = await modelUser.findOne({ Username })
+    if (!checkuser) {
+        res.status(400);
+        throw new Error("username or password is wrong")
+    }
 
 
+    const checkpasssword = await bcrypt.compare(Password, checkuser.Password)
+    if (!checkpasssword) {
+        res.status(400);
+        throw new Error("username or password is wrong")
+    }
 
-//     const KEY = process.env.KEY_TOKEN
-//     const payload = {
-//         username: checkuser.username,
-//         role: checkuser.role
-//     }
-//     const token = jwt.sign(payload, KEY, { expiresIn: process.env.TIME_LOGIN })
-//     res.status(200).json({
-//         message: ("token:", token)
-//     })
+    const KEY = process.env.KEY_TOKEN
+    const payload = {
+        Username: checkuser.Username,
+        Role: checkuser.Role,
+        id: checkuser._id,
+        Expiry: checkuser.Expiry
+    }
+    const token = jwt.sign(payload, KEY, {
+        expiresIn: process.env.TIME_TOKEN
+    })
+    res.status(200).json({
+        token
+    })
+}
+)
 
-// }
-// ) 
+const account = asyncHandler(async (req, res) => {
+    // const { address, age, key, name } = req.body
+    // console.log("skugcuybvclaksjc")
+    // console.log(address, age, key, name)
+    const dataaccount = await modelUser.find({}).select("-Password")
+    if (!dataaccount) {
+        res.status(500)
+        throw new Error("server is not responding")
+    }
+    res.status(200).json({
+        data: dataaccount
+    })
 
-const controller = { signup }
+})
+
+const update = asyncHandler(async (req, res) => {
+    console.log("dax up date")
+    const { Expiry, id } = req.body
+    console.log(Expiry, id)
+
+    const checkuser = await modelUser.findOne({ _id: id })
+    if (!checkuser) {
+        res.status(400);
+        throw new Error("error operation")
+    }
+
+    const updateUser = await modelUser.updateOne({ _id: id }, { Expiry })
+    const dataaccount = await modelUser.find({}).select("-Password")
+    res.status(200).json({
+        data: dataaccount
+    })
+})
+
+const fetchCurrentUser = asyncHandler(async (req, res) => {
+
+    const idUser = req.user.id
+
+    const datauser = await modelUser.findOne({ _id: idUser }).select("-Password")
+    res.status(200).json({
+        data: datauser
+    })
+})
+
+
+const controller = { signup, account, login, fetchCurrentUser, update }
 export default controller

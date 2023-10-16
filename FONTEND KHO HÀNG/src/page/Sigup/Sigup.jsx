@@ -1,37 +1,23 @@
 import React from 'react'
-import { Button, Form, Input, Select } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import axios from "axios"
-
+import { Button, DatePicker, Form, Input, message, Select } from 'antd';
+import apiUser from '../Service/methodAxios.js';
+import moment from 'moment';
 
 const Sigup = () => {
-    const navigate = useNavigate();
-    const [form] = Form.useForm();
+    const [form] = Form.useForm()
     const onFinish = async (values) => {
-        // console.log('Success:', values);
+
 
         try {
-
-            console.log('Success:', values);
-            const sigupUser = await axios.post("http://localhost:4000/api/v1/signup", values);
-            // alert("đăng ký thành công")
-            form.resetFields();
+            const selectedDate = values.Expiry.format('YYYY-MM-DD')
+            values.Expiry = selectedDate
+            const sigupUser = await apiUser.signup(values)
+            message.success("Đăng ký thành công", 2)
+            form.resetFields()
         } catch (error) {
-            alert("LỖI! đăng ký không thành công")
+            message.error("LỖI! đăng ký không thành công", 2)
         }
 
-        // const sigupUser = await axios.post("http://localhost:4000/api/v1/signup", values)
-
-        // console.log("new ueser:", sigupUser.status);
-        // console.log("new ueser:", sigupUser.data.data);
-        // console.log("sigupUser:", sigupUser);
-        // console.log("status:"status)
-        // // if(sigupUser){
-        //     alert("đăng ký thành công")
-        // }
-        // else{
-
-        // }
 
     };
     const onFinishFailed = (errorInfo) => {
@@ -40,7 +26,7 @@ const Sigup = () => {
     return (
         <div className='page-login'>
             <Form
-
+                form={form}
                 labelCol={{
                     span: 10,
                 }}
@@ -110,6 +96,18 @@ const Sigup = () => {
                 >
                     <Input />
                 </Form.Item>
+
+                <Form.Item
+                    name="Expiry"
+                    label="Expiry"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Vui lòng chọn ngày tháng!'
+                        }]}>
+                    <DatePicker />
+                </Form.Item>
+
                 <Form.Item
                     className='box-buton-login'
                 >

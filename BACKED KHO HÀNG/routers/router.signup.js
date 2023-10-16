@@ -1,8 +1,4 @@
 import express from "express"
-import asyncHandler from "express-async-handler"
-import modelUser from "../model/modelUser.js"
-import bcrypt from "bcrypt"
-import validation from "../validations/auth.schemauser.js"
 import controller from "../controllers/controllerusers.js"
 import schemmavalidation from "../validations/auth.schemauser.js"
 import mdwAuthValication from "../middlewares/mdw.authValication.js"
@@ -10,7 +6,7 @@ import mdwAuthValication from "../middlewares/mdw.authValication.js"
 
 const router = express.Router()
 
-router.post('/', mdwAuthValication(schemmavalidation.schemasignup), controller.signup)
+router.post('/', mdwAuthValication(schemmavalidation.signup), controller.signup)
 
 
 

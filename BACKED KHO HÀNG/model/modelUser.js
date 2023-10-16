@@ -16,9 +16,18 @@ const schemaUser = new mongoose.Schema({
     Keyresetpassword: {
         type: String,
         required: true
+    },
+    Expiry: {
+        type: Date,
+        required: true
     }
+
 })
+// schemaUser.collection = function () {
+//     return `${this.Username}`;
+// };
 
 const modelUser = mongoose.model("DATAUSERS", schemaUser)
+
 
 export default modelUser

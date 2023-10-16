@@ -1,16 +1,42 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Navigate} from 'react-router-dom'
+import { Button, Form, Input, message } from 'antd';
 import "./Login.css"
+import  apiUser  from '../Service/methodAxios.js';
+import { TOKENS } from '../../utils/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux/auth/authSlice';
 
 
 const Login = () => {
-    const navigate = useNavigate();
-    const onFinish = (values) => {
-        // console.log('Success:', values);
-        console.log('Success:');
-        navigate("/repository")
-        // <NavLink to=""></NavLink>
+    const dispathch =useDispatch()
+    const {Roleadmin, loginStatus}= useSelector((state)=>state.login)
+    // const navigate = useNavigate();
+    
+    if (loginStatus){
+       return <Navigate to={"/repository"}/>
+    }
+    const onFinish =async (values) => {
+        try {
+            const sigupUser = await apiUser.login(values)
+            const token = sigupUser.data.token
+            if(token){
+                  sessionStorage.setItem(TOKENS.login, token)
+                  const user = await apiUser.fechtcurrent()
+             
+                  if (user.data.data.Role==="admin"){
+                      dispathch(login())
+                  }
+                  
+                 return <Navigate to={"/repository"}/>
+
+            }
+          
+            
+        } catch (error) {
+            message.error("ERROR! User or password wrong", 2)
+        }
+
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -34,7 +60,7 @@ const Login = () => {
             >
                 <Form.Item
                     label="Username"
-                    name="username"
+                    name="Username"
                     rules={[
                         {
                             required: true,
@@ -47,7 +73,7 @@ const Login = () => {
 
                 <Form.Item
                     label="Password"
-                    name="password"
+                    name="Password"
                     rules={[
                         {
                             required: true,
