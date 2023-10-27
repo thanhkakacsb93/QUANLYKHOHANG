@@ -6,27 +6,37 @@ import ImportHistory from "./page/ImportHistory/ImportHistory"
 import Inventory from "./page/Inventory/Inventory"
 import Login from "./page/Login/Login"
 import Repository from "./page/Repository/Repository"
-import Shelves from "./page/Shelves/Shelves"
 import Sigup from "./page/Sigup/Sigup"
 import Accountlist from "./page/Account list/Accountlist"
 import { useEffect } from "react"
 import { TOKENS } from "./utils/constant"
 import apiUser from "./page/Service/methodAxios"
 import { useDispatch, useSelector } from "react-redux"
-import { login } from "./redux/auth/authSlice"
 import Protectedroute from "./components/protectedroute/protectedroute"
+import { roleadmin, rolemember, saveUser } from "./redux/auth/authSlice.js"
+import ListSupplies from "./page/Repository/listSupplies/ListSupplies"
 
 function App() {
   const dispathch = useDispatch()
+  const { idUser } = useSelector((state) => state.login)
   const token = sessionStorage.getItem(TOKENS.login)
   const current = async () => {
     if (token) {
       try {
         const user = await apiUser.fechtcurrent()
-        if (user.data.data.Role === "admin") {
-          dispathch(login())
-          // console.log("loginStatus:", loginStatus); vi sao van bao laf false
+        const payload = {
+          id: user.data.data._id
         }
+        await dispathch(saveUser(payload))
+        console.log("idUser: ", idUser);
+
+        if (user.data.data.Role === "admin") {
+          dispathch(roleadmin())
+        }
+        if (user.data.data.Role === "member") {
+          dispathch(rolemember())
+        }
+
       } catch (error) {
 
       }
@@ -41,11 +51,13 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/repository" element={< Protectedroute component={SiteLayout} />}>
             <Route index element={<Repository />} />
-            <Route path="shelves" element={<Shelves />}></Route>
+
+            <Route path="ListSupplies" element={<ListSupplies />}></Route>
             <Route path="exportcommand" element={<ExportCommand />}></Route>
             <Route path="importHistory" element={<ImportHistory />}></Route>
             <Route path="exportHistory" element={<ExportHistory />}></Route>
-            <Route path="accounts" element={<Accountlist />}>
+            <Route path="accounts" >
+              <Route index element={<Accountlist />}></Route>
               <Route path="signup" element={<Sigup />}></Route>
             </Route>
 

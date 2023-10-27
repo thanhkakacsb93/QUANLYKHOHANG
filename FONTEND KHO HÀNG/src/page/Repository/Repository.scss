@@ -1,0 +1,14 @@
+.pageRepo{
+    position: relative;
+    &-button{
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+    }
+    &-listshelves{
+        position: absolute;
+        width: 100%;
+
+    }
+}
+

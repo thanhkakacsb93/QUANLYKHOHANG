@@ -2,29 +2,38 @@ import React from 'react'
 import { Button, DatePicker, Form, Input, message, Select } from 'antd';
 import apiUser from '../Service/methodAxios.js';
 import moment from 'moment';
+import "./Sigup.css"
+import { useDispatch, useSelector } from 'react-redux';
+import { outSignup } from '../../redux/auth/authSlice.js';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-const Sigup = () => {
+const Sigup = (props) => {
+    const { handleSubmit } = props
     const [form] = Form.useForm()
+    const dispatch = useDispatch()
+
+    const navigate = useNavigate()
     const onFinish = async (values) => {
-
-
         try {
             const selectedDate = values.Expiry.format('YYYY-MM-DD')
             values.Expiry = selectedDate
             const sigupUser = await apiUser.signup(values)
             message.success("Đăng ký thành công", 2)
             form.resetFields()
+            handleSubmit()
+            // console.log("handleSubmit:", );
+            dispatch(outSignup());
+            // navigate("/repository/accounts")
         } catch (error) {
             message.error("LỖI! đăng ký không thành công", 2)
         }
-
 
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
     return (
-        <div className='page-login'>
+        <div className='page-signup' >
             <Form
                 form={form}
                 labelCol={{

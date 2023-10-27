@@ -22,6 +22,10 @@ const apiUser = {
         const endPoint = `/updateuser`
         return api.post(endPoint, body)
     },
+    deleteUser: (body) => {
+        const endPoint = `/deleteuser`
+        return api.post(endPoint, body)
+    },
     account: () => {
         const endPoint = `/accounts`
         return api.get(endPoint)

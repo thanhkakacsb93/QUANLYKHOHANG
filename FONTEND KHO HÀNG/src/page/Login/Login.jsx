@@ -1,21 +1,24 @@
 import React from 'react'
-import { Navigate} from 'react-router-dom'
+// import { Navigate, useNavigate} from 'react-router-dom'
 import { Button, Form, Input, message } from 'antd';
 import "./Login.css"
 import  apiUser  from '../Service/methodAxios.js';
 import { TOKENS } from '../../utils/constant';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../redux/auth/authSlice';
+import { roleadmin, rolemember, saveUser } from '../../redux/auth/authSlice.js';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
     const dispathch =useDispatch()
-    const {Roleadmin, loginStatus}= useSelector((state)=>state.login)
-    // const navigate = useNavigate();
+    const navigate =useNavigate();
+    const {Roleadmin, loginStatus, idUser }= useSelector((state)=>state.login)
     
     if (loginStatus){
-       return <Navigate to={"/repository"}/>
+    //    return <Navigate to={"/repository"}/>
+    return navigate("/repository")
     }
+
     const onFinish =async (values) => {
         try {
             const sigupUser = await apiUser.login(values)
@@ -23,16 +26,24 @@ const Login = () => {
             if(token){
                   sessionStorage.setItem(TOKENS.login, token)
                   const user = await apiUser.fechtcurrent()
-             
-                  if (user.data.data.Role==="admin"){
-                      dispathch(login())
+                  console.log("idUser: ", idUser);
+                  const payload={
+                      id: user.data.data._id
                   }
-                  
-                 return <Navigate to={"/repository"}/>
+                //   console.log("payload: ", user.data.data._id);
+                  await dispathch(saveUser(payload))
+                  console.log("idUser: ", idUser);
 
+                  if (user.data.data.Role==="admin"){
+                      dispathch(roleadmin())
+                  }
+                  if(user.data.data.Role==="member"){
+                      dispathch(rolemember())
+                  }
+                    return navigate("/repository")
+            //    return <Navigate to={"/repository"}/>//sao k hoạt động
             }
           
-            
         } catch (error) {
             message.error("ERROR! User or password wrong", 2)
         }

@@ -33,13 +33,14 @@ const signup = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
     const { Username, Password } = req.body
+    console.log(Username, Password)
+
 
     const checkuser = await modelUser.findOne({ Username })
     if (!checkuser) {
         res.status(400);
         throw new Error("username or password is wrong")
     }
-
 
     const checkpasssword = await bcrypt.compare(Password, checkuser.Password)
     if (!checkpasssword) {
@@ -60,8 +61,17 @@ const login = asyncHandler(async (req, res) => {
     res.status(200).json({
         token
     })
-}
-)
+})
+
+const fetchCurrentUser = asyncHandler(async (req, res) => {
+
+    const idUser = req.user.id
+
+    const datauser = await modelUser.findOne({ _id: idUser }).select("-Password")
+    res.status(200).json({
+        data: datauser
+    })
+})
 
 const account = asyncHandler(async (req, res) => {
     // const { address, age, key, name } = req.body
@@ -77,6 +87,21 @@ const account = asyncHandler(async (req, res) => {
     })
 
 })
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    const checkid = await modelUser.findOne({ _id: id })
+    if (!checkid) {
+        res.status(400)
+        throw new Error("error checking id")
+    }
+    await modelUser.deleteOne({ _id: id })
+    res.status(200).json({
+        message: "deleted user"
+    })
+})
+
 
 const update = asyncHandler(async (req, res) => {
     console.log("dax up date")
@@ -96,16 +121,8 @@ const update = asyncHandler(async (req, res) => {
     })
 })
 
-const fetchCurrentUser = asyncHandler(async (req, res) => {
-
-    const idUser = req.user.id
-
-    const datauser = await modelUser.findOne({ _id: idUser }).select("-Password")
-    res.status(200).json({
-        data: datauser
-    })
-})
 
 
-const controller = { signup, account, login, fetchCurrentUser, update }
+
+const controller = { signup, account, login, fetchCurrentUser, update, deleteUser }
 export default controller

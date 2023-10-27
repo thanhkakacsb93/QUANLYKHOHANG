@@ -16,7 +16,7 @@ const SiteLayout = () => {
                 </Col>
 
                 <Col span={20}>
-                    <main className='bg-[yellow]'>
+                    <main>
                         <Outlet />
                     </main>
                 </Col>

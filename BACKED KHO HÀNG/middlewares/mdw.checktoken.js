@@ -10,7 +10,6 @@ const mdwCheckToken = (req, res, next) => {
         }
         const checktoken = jwt.verify(accesstoken, process.env.KEY_TOKEN)
         req.user = checktoken
-
         next()
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
