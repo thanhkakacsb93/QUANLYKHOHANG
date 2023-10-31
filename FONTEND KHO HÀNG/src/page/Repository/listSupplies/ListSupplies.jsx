@@ -1,20 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Button, Form, Input, InputNumber, message, Popconfirm, Table, Typography } from 'antd';
 import apiRepo from '../../Service/methodAxios.Repo';
 import { useSelector } from 'react-redux';
-
-// const originData = [];
-// for (let i = 0; i < 100; i++) {
-//     originData.push({
-//         key: i.toString(),
-//         NameSupplies: `Edward ${i}`,
-//         Quantity: 32,
-//         Unit: `London Park no. ${i}`,
-//         Image: "",
-//         Export: ""
-//     });
-// }
-
 
 
 const ListSupplies = () => {
@@ -22,6 +9,8 @@ const ListSupplies = () => {
     const [form] = Form.useForm();
     const [data, setData] = useState([]);
     const [editingKey, setEditingKey] = useState('');
+    const [deleteSupplies, setdeleteSupplies] = useState(false)
+    const [updateSupplies, setupdateSupplies] = useState(false)
 
     const handelgetdataSupplies = async () => {
         const originData = await apiRepo.listSupplies({
@@ -34,7 +23,7 @@ const ListSupplies = () => {
         setData([...dataSupplies])
     }
 
-    useEffect(() => { handelgetdataSupplies() }, [data.length])
+    useEffect(() => { handelgetdataSupplies() }, [data.length, deleteSupplies, updateSupplies])
 
     const EditableCell = ({
         editing,
@@ -57,8 +46,8 @@ const ListSupplies = () => {
                         }}
                         rules={[
                             {
-                                required: true,
-                                message: `Please Input ${title}!`,
+                                required: false,
+                                // message: `Please Input ${title}!`,
                             },
                         ]}
                     >
@@ -79,6 +68,7 @@ const ListSupplies = () => {
     const edit = (record) => {
         form.setFieldsValue({
             NameSupplies: '',
+            NameShelves: '',
             Quantity: '',
             Unit: '',
             Image: "",
@@ -93,6 +83,9 @@ const ListSupplies = () => {
     const save = async (key) => {
         try {
             const row = await form.validateFields();
+            const dataupdateSupplies = { ...row, id: editingKey }
+            await apiRepo.updateSupplies(dataupdateSupplies)
+            setupdateSupplies
             const newData = [...data];
             const index = newData.findIndex((item) => key === item.key);
             if (index > -1) {
@@ -113,13 +106,23 @@ const ListSupplies = () => {
         }
     };
 
-    const onFinish = (values, record) => {
-        console.log(values);
-        console.log(record);
+    const handleExport = (record, exportValue) => {
+        console.log('Exporting record:', record);
+        console.log('Expor:', exportValue);
+        form.resetFields()
+
     };
+
     const onReset = () => {
         form.resetFields();
     };
+
+    const handleDelete = async (id) => {
+        await apiRepo.deleteSupplies({ id })
+        message.success("da xoa", 2)
+        setdeleteSupplies(!deleteSupplies)
+        return false
+    }
 
     const columns = [
         {
@@ -132,6 +135,12 @@ const ListSupplies = () => {
             title: 'NameSupplies',
             dataIndex: 'NameSupplies',
             width: '25%',
+            editable: true,
+        },
+        {
+            title: 'NameShelves',
+            dataIndex: 'NameShelves',
+            width: '10%',
             editable: true,
         },
         {
@@ -157,65 +166,59 @@ const ListSupplies = () => {
             title: 'export',
             dataIndex: 'export',
             width: '40%',
-            render: (_, record) => {
-                return (
-                    <Form
-                        form={form}
-                        name="control-hooks"
-                        onFinish={(values) => onFinish(values, record)}
-                        style={{
-                            maxWidth: 600,
-                        }}
-                    >
-                        <Form.Item
-                            name="note"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'chua có giá trị xuất',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                            <Button htmlType="button" onClick={onReset}>
-                                Reset
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                );
-            },
+            render: (_, record) => (
+            <Form 
+            form={form} 
+            onFinish={(values) => handleExport(record, values.exportValue)}>
+                <Form.Item name="exportValue">
+                    <Input placeholder="Enter export value" />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Export
+                    </Button>
+                </Form.Item>
+            </Form>),
         },
         {
             title: 'operation',
             dataIndex: 'operation',
             render: (_, record) => {
-                const editable = isEditing(record);
-                return editable ? (
+                return (
                     <span>
-                        <Typography.Link
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                        {editingKey === record.key ? (
+                            <span>
+                                <Typography.Link
+                                    onClick={() => save(record.key)}
+                                    style={{ marginRight: 8 }}
+                                >
+                                    Save
+                                </Typography.Link>
+                                <Popconfirm
+                                    title="Sure to cancel?"
+                                    onConfirm={cancel}
+                                >
+                                    <a>Cancel</a>
+                                </Popconfirm>
+                            </span>
+                        ) : (
+                            <Typography.Link
+                                disabled={editingKey !== ''}
+                                onClick={() => edit(record)}
+                            >
+                                Edit
+                            </Typography.Link>
+                        )}
+                        <Popconfirm
+                            title="Sure to delete?"
+                            onConfirm={() => handleDelete(record.key)}
+                            onCancel={() => { return false }}
                         >
-                            Save
-                        </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <a>Cancel</a>
+                            <a>Delete</a>
                         </Popconfirm>
                     </span>
-                ) : (
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                        Edit
-                    </Typography.Link>
-                );
-            },
+                )
+            }
         },
     ];
     const mergedColumns = columns.map((col) => {

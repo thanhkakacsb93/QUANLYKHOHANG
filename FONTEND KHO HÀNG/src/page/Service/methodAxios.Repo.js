@@ -16,6 +16,14 @@ const apiRepo = {
     listSupplies: (body) => {
         const endPoint = `/listsupplies`;
         return api.post(endPoint, body)
+    },
+    deleteSupplies: (body) => {
+        const endPoint = `/deletesupplies`;
+        return api.post(endPoint, body)
+    },
+    updateSupplies: (body) => {
+        const endPoint = `/updatesupplies`;
+        return api.post(endPoint, body)
     }
 
 }

@@ -11,6 +11,8 @@ import Routeraddimg from "./router.addImage.js"
 import RouterRepo from "./router.Repo.js"
 import RouterSupplies from "./router.AddSupplies.js"
 import RouterListSupplies from "./router.viewListSupplies.js"
+import RouterDeleteSupplies from "./router.deleteSupplies.js"
+import RouterUpdateSupplies from "./router.updateSupplies.js"
 
 
 const router = express.Router()
@@ -27,6 +29,11 @@ router.use("/addimg", Routeraddimg)
 router.use("/repo", RouterRepo)
 router.use("/addsupplies", RouterSupplies)
 router.use("/listsupplies", RouterListSupplies)
+router.use("/deletesupplies", RouterDeleteSupplies)
+router.use("/updatesupplies", RouterUpdateSupplies)
+
+
+
 
 
 

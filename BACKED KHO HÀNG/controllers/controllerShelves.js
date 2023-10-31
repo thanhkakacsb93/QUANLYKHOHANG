@@ -100,9 +100,38 @@ const listSupplies = asyncHandler(async (req, res) => {
     res.status(200).json({
         data: listSupplies
     })
-
-
 })
 
-const controller = { addShelves, addImage, listshelves, addSupplies, listSupplies }
+const deleteSupplies = asyncHandler(async (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    const checkSupplies = await modelSupplies.findOne({ _id: id })
+    if (!checkSupplies) {
+        res.status(400)
+        throw new Error("supplies not found")
+    }
+    await modelSupplies.deleteOne({ _id: id })
+    res.status(200).json({
+        message: `${checkSupplies.NameSupplies} has been deleted`
+    })
+})
+
+const updateSupplies = asyncHandler(async (req, res) => {
+    const { NameSupplies, Quantity, Unit, NameShelves, id } = req.body
+    const newvalue = {
+        NameSupplies, Quantity, Unit, NameShelves
+    }
+
+    const checkSupplies = await modelSupplies.findOne({ _id: id })
+    if (!checkSupplies) {
+        res.status(400)
+        throw new Error("supplies not found")
+    }
+    await modelSupplies.updateOne({ _id: id }, newvalue)
+    res.status(200).json({
+        message: "has been updated"
+    })
+})
+
+const controller = { addShelves, addImage, listshelves, addSupplies, listSupplies, deleteSupplies, updateSupplies }
 export default controller

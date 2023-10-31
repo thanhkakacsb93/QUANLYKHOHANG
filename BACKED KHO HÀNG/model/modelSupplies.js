@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { string } from "yup"
 
 const schemaSupplies = new mongoose.Schema({
     CreatorId: {
@@ -21,7 +22,6 @@ const schemaSupplies = new mongoose.Schema({
         type: String,
         required: true
     }
-
 })
 
 const modelSupplies = mongoose.model("DataSupplies", schemaSupplies)

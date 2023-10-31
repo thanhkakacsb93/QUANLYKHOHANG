@@ -108,11 +108,11 @@ const Accountlist = () => {
                     ...item,
                     ...row,
                 });
-                setData(newData);/////////////
+                setData(newData);
                 setEditingKey('');
             } else {
                 newData.push(row);
-                setData(newData);/////////////
+                setData(newData);
                 setEditingKey('');
             }
         } catch (errInfo) {
