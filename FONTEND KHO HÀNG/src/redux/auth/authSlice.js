@@ -7,8 +7,10 @@ const initialState = {
     current: {},
     clickSignup: false,
     idUser: "",
-    statusAddShelves: true,
-    namerepo: ""
+    // statusAddShelves: true,
+    namerepo: "",
+    StatusSearchRepo: false,
+    StatusSearchSupplies: false
 }
 
 const authSlice = createSlice({
@@ -34,11 +36,47 @@ const authSlice = createSlice({
         },
         selectRepo: (state, { payload }) => {
             state.namerepo = payload.namerepo
+        },
+        searchRepo: (state) => {
+            state.StatusSearchRepo = true
+        },
+        resetsearchRepo: (state) => {
+            state.StatusSearchRepo = false
+        },
+        searchSupplies: (state) => {
+            state.StatusSearchSupplies = true
+        },
+        resetsearchSupplies: (state) => {
+            state.StatusSearchSupplies = false
+        },
+
+        resetState: (state) => {
+            state.loginStatus = false
+            state.Roleadmin = false
+            state.current = {}
+            state.clickSignup = false
+            state.idUser = ""
+            // state.statusAddShelves = true
+            state.namerepo = ""
+            state.StatusSearchRepo = false
+            state.StatusSearchSupplies = false
         }
     }
 });
 
-export const { rolemember, roleadmin, signup, outSignup, saveUser, selectRepo } = authSlice.actions
+export const {
+    rolemember,
+    roleadmin,
+    signup,
+    outSignup,
+    saveUser,
+    selectRepo,
+    resetState,
+    searchRepo,
+    resetsearchRepo,
+    searchSupplies,
+    resetsearchSupplies
+} = authSlice.actions
 
 export default authSlice.reducer;
 

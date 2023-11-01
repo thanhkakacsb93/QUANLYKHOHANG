@@ -13,7 +13,8 @@ import RouterSupplies from "./router.AddSupplies.js"
 import RouterListSupplies from "./router.viewListSupplies.js"
 import RouterDeleteSupplies from "./router.deleteSupplies.js"
 import RouterUpdateSupplies from "./router.updateSupplies.js"
-
+import RouterUpdateExport from "./router.updateExport.js"
+import RouterSerchRepo from "./router.SerchRepo.js"
 
 const router = express.Router()
 
@@ -31,6 +32,10 @@ router.use("/addsupplies", RouterSupplies)
 router.use("/listsupplies", RouterListSupplies)
 router.use("/deletesupplies", RouterDeleteSupplies)
 router.use("/updatesupplies", RouterUpdateSupplies)
+router.use("/updateexport", RouterUpdateExport)
+router.use("/searchrepo", RouterSerchRepo)
+
+
 
 
 

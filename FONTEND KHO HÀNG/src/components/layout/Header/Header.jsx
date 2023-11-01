@@ -1,14 +1,25 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { resetState } from '../../../redux/auth/authSlice.js'
 
 
 
 const Header = () => {
     const { Roleadmin } = useSelector((state) => state.login)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
 
-    const handleLogout = () => {
-
+    const handleLogout = async () => {
+        const logout = confirm("bạn muốn đăng xuất")
+        if (logout) {
+            sessionStorage.clear()
+            await dispatch(resetState())
+            navigate("/")
+        }
+        else {
+            return false
+        }
     }
     const headerLogged = (
         <>
@@ -28,7 +39,7 @@ const Header = () => {
                 Roleadmin ? headerLogged : ""
             }
             {/* <NavLink to="/repository/accounts"><span>accounts</span></NavLink> */}
-            <p onClick={handleLogout}>Logout</p>
+            <button onClick={handleLogout}>Logout</button>
 
 
         </div>

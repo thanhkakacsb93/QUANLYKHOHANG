@@ -60,6 +60,7 @@ const Accountlist = () => {
 
         const dataaccout = await apiUser.account()
         const arrAccount = dataaccout.data.data
+        arrAccount.sort((a, b) => a.Username.localeCompare(b.Username))
         const lisaccount = arrAccount.map((item, index) => ({
             ...item, STT: index + 1, key: item._id
         }))

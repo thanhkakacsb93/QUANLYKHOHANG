@@ -3,6 +3,6 @@ import controller from "../controllers/controllerShelves.js"
 
 const router = express.Router()
 
-router.post("/", controller.addShelves)
+router.post("/", controller.updateExport)
 
 export default router

@@ -24,6 +24,14 @@ const apiRepo = {
     updateSupplies: (body) => {
         const endPoint = `/updatesupplies`;
         return api.post(endPoint, body)
+    },
+    updateexport: (body) => {
+        const endPoint = `/updateexport`;
+        return api.post(endPoint, body)
+    },
+    searchRepo: (body) => {
+        const endPoint = `/searchrepo`;
+        return api.post(endPoint, body)
     }
 
 }

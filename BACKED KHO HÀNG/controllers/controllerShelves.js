@@ -133,5 +133,36 @@ const updateSupplies = asyncHandler(async (req, res) => {
     })
 })
 
-const controller = { addShelves, addImage, listshelves, addSupplies, listSupplies, deleteSupplies, updateSupplies }
+const updateExport = asyncHandler(async (req, res) => {
+    const { exportValue, id } = req.body
+    const checkSupplies = await modelSupplies.findOne({ _id: id })
+    if (!checkSupplies) {
+        res.status(400)
+        throw new Error("supplies not found")
+    }
+    const updatedQuantity = +checkSupplies.Quantity - +exportValue
+    console.log(updatedQuantity)
+    if (updatedQuantity < 0) {
+        res.status(400)
+        throw new Error("The export quantity cannot be greater than the inventory");
+    }
+    else {
+        await modelSupplies.updateOne({ _id: id }, { Quantity: updatedQuantity })
+        res.status(200).json({
+            message: "added to the export ticket"
+        })
+    }
+})
+
+const SerchRepo = asyncHandler(async (req, res) => {
+    const { CreatorId, valueSerch } = req.body
+    // const valueSerch = "MÀI"
+    const checkrepo = await modelSupplies.find({ $and: [{ CreatorId }, { NameSupplies: { $regex: valueSerch, $options: "i" } }] })
+    res.status(200).json({
+        data: checkrepo
+    })
+    console.log("first")
+})
+
+const controller = { addShelves, addImage, listshelves, addSupplies, listSupplies, deleteSupplies, updateSupplies, updateExport, SerchRepo }
 export default controller
