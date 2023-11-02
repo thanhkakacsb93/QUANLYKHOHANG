@@ -33,7 +33,6 @@ const apiRepo = {
         const endPoint = `/searchrepo`;
         return api.post(endPoint, body)
     }
-
 }
 
 export default apiRepo

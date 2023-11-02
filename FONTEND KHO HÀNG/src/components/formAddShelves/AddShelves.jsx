@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import apiRepo from '../../page/Service/methodAxios.Repo'
@@ -15,7 +15,7 @@ const AddShelves = (props) => {
             await apiRepo.addShelves(values)
             handleClickbuttonCancel()
         } catch (error) {
-            message.error("LỖI! đăng ký không thành công", 2)
+            message.error("ERROR! nameShelves alrealy exists ", 2)
         }
 
     };

@@ -10,7 +10,8 @@ const initialState = {
     // statusAddShelves: true,
     namerepo: "",
     StatusSearchRepo: false,
-    StatusSearchSupplies: false
+    StatusSearchSupplies: false,
+    dataListSuppliesCommand: []
 }
 
 const authSlice = createSlice({
@@ -49,7 +50,9 @@ const authSlice = createSlice({
         resetsearchSupplies: (state) => {
             state.StatusSearchSupplies = false
         },
-
+        exportSupplies: (state, { payload }) => {
+            state.dataListSuppliesCommand = dataListSuppliesCommand.push(payload)
+        },
         resetState: (state) => {
             state.loginStatus = false
             state.Roleadmin = false
@@ -75,7 +78,8 @@ export const {
     searchRepo,
     resetsearchRepo,
     searchSupplies,
-    resetsearchSupplies
+    resetsearchSupplies,
+    exportSupplies
 } = authSlice.actions
 
 export default authSlice.reducer;

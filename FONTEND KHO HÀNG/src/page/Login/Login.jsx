@@ -1,6 +1,6 @@
-import React from 'react'
-// import { Navigate, useNavigate} from 'react-router-dom'
-import { Button, Form, Input, message } from 'antd';
+import React, { createContext,useEffect } from 'react'
+// import { Navigate, useNavigate} from 'react-router-dom
+import { Button, Form, Input, message, Modal } from 'antd';
 import "./Login.css"
 import  apiUser  from '../Service/methodAxios.js';
 import { TOKENS } from '../../utils/constant';
@@ -13,7 +13,23 @@ const Login = () => {
     const dispathch =useDispatch()
     const navigate =useNavigate();
     const {Roleadmin, loginStatus, idUser }= useSelector((state)=>state.login)
-    
+    const [modal, contextHolder] = Modal.useModal();
+    const ReachableContext = createContext(null);
+    const UnreachableContext = createContext(null);
+
+    const config = {
+  title: 'Use Hook!',
+  content: (
+    <>
+      <p>thanh</p>
+    </>
+  ),
+};
+
+  useEffect(() => {
+    modal.warning(config);
+  });
+
     if (loginStatus){
     //    return <Navigate to={"/repository"}/>
     return navigate("/repository")
@@ -24,13 +40,18 @@ const Login = () => {
             const sigupUser = await apiUser.login(values)
             const token = sigupUser.data.token
             if(token){
-                  sessionStorage.setItem(TOKENS.login, token)
-                  const user = await apiUser.fechtcurrent()
-                  console.log("idUser: ", idUser);
+                sessionStorage.setItem(TOKENS.login, token)
+                const user = await apiUser.fechtcurrent()
+                const checkdate = user.data.data
+                if(!checkdate){
+                    sessionStorage.clear()
+                  return alert("! TÀI KHOẢN HẾT HẠN SỬ DỤNG. LIÊN HỆ VỚI NHÀ CUNG CẤP ĐỂ ĐƯỢC GIA HẠN")
+                }
+                
                   const payload={
                       id: user.data.data._id
                   }
-                //   console.log("payload: ", user.data.data._id);
+                
                   await dispathch(saveUser(payload))
                   console.log("idUser: ", idUser);
 
@@ -53,6 +74,7 @@ const Login = () => {
         console.log('Failed:', errorInfo);
     };
     return (
+        <>
         <div className='page-login'>
             <Form
                 labelCol={{
@@ -108,6 +130,8 @@ const Login = () => {
                 </Form.Item>
             </Form>
         </div>
+        </>
+        
     )
 }
 

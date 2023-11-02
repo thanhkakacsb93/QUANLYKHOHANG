@@ -23,7 +23,6 @@ const signup = asyncHandler(async (req, res) => {
         Expiry
     })
     await newUser.save()
-    console.log(`${Username}`)
 
     res.status(200).json({
         message: "đăng ký thành công",
@@ -68,9 +67,18 @@ const fetchCurrentUser = asyncHandler(async (req, res) => {
     const idUser = req.user.id
 
     const datauser = await modelUser.findOne({ _id: idUser }).select("-Password")
-    res.status(200).json({
-        data: datauser
-    })
+
+    const checkdate = new Date(datauser.Expiry)
+    const nowdate = new Date()
+    if (checkdate <= nowdate) {
+        return res.status(200).json({
+            message: "out of date"
+        })
+    } else {
+        return res.status(200).json({
+            data: datauser
+        })
+    }
 })
 
 const account = asyncHandler(async (req, res) => {

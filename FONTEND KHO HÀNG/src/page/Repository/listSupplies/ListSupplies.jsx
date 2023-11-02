@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, InputNumber, message, Popconfirm, Table, Typography } from 'antd';
 import apiRepo from '../../Service/methodAxios.Repo';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetsearchSupplies, searchSupplies } from '../../../redux/auth/authSlice';
+import { exportSupplies, resetsearchSupplies, searchSupplies } from '../../../redux/auth/authSlice';
 
 const ListSupplies = () => {
     const { namerepo, idUser, StatusSearchSupplies } = useSelector((state) => state.login)
@@ -148,6 +148,9 @@ const ListSupplies = () => {
         else {
             try {
                 await apiRepo.updateexport(bodyExport)
+                record.Quantity = exportValue
+                const payload = record
+                // await dispatch(exportSupplies(payload))
                 setupdateExport(!updateExport)
             } catch (error) {
                 message.error("The export quantity cannot be greater than the inventory", 2)
@@ -212,7 +215,6 @@ const ListSupplies = () => {
             width: '40%',
             render: (_, record) => (
                 <Form
-                    // form={form} 
                     onFinish={(values) => handleExport(record, values.exportValue)}>
                     <Form.Item name="exportValue">
                         <Input placeholder="Enter export value" />

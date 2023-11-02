@@ -211,7 +211,6 @@ const Accountlist = () => {
 
     const handleSubmit = () => {
         setclickSubmit(!clickSubmit)
-        console.log("da render");
     }
     const formSignup = (
         <div className='box-signup'><Sigup handleSubmit={handleSubmit} /></div>

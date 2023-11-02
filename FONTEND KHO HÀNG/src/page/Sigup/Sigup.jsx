@@ -11,10 +11,10 @@ const Sigup = (props) => {
     const { handleSubmit } = props
     const [form] = Form.useForm()
     const dispatch = useDispatch()
-
     const navigate = useNavigate()
     const onFinish = async (values) => {
         try {
+            console.log("values.Expir: ", values.Expiry.$d)
             const selectedDate = values.Expiry.format('YYYY-MM-DD')
             values.Expiry = selectedDate
             const sigupUser = await apiUser.signup(values)
