@@ -127,11 +127,12 @@ const Accountlist = () => {
             dataIndex: 'STT',
             width: '10%',
             editable: false,
+            align: 'center'
         },
         {
             title: 'Username',
             dataIndex: 'Username',
-            width: '25%',
+            width: '20%',
             editable: false,
         },
         {
@@ -139,22 +140,26 @@ const Accountlist = () => {
             dataIndex: 'Role',
             width: '10%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'Keyresetpassword',
             dataIndex: 'Keyresetpassword',
-            width: '20%',
+            width: '10%',
             editable: false,
+            align: 'center'
         },
         {
             title: 'Expiry',
             dataIndex: 'Expiry',
-            width: '40%',
+            width: '20%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'operation',
             dataIndex: 'operation',
+            align: 'center',
             render: (_, record) => {
                 return (
                     <span>
@@ -177,6 +182,7 @@ const Accountlist = () => {
                             <Typography.Link
                                 disabled={editingKey !== ''}
                                 onClick={() => edit(record)}
+                                className="mr-6"
                             >
                                 Edit
                             </Typography.Link>

@@ -141,11 +141,20 @@ const updateExport = asyncHandler(async (req, res) => {
         throw new Error("supplies not found")
     }
     const updatedQuantity = +checkSupplies.Quantity - +exportValue
-    console.log(updatedQuantity)
+    // if(updatedQuantity === 0){
+
+    // }
     if (updatedQuantity < 0) {
         res.status(400)
         throw new Error("The export quantity cannot be greater than the inventory");
     }
+    else if (updatedQuantity === 0) {
+        await modelSupplies.deleteOne({ _id: id })
+        res.status(200).json({
+            message: "supplies have been exported"
+        })
+    }
+
     else {
         await modelSupplies.updateOne({ _id: id }, { Quantity: updatedQuantity })
         res.status(200).json({

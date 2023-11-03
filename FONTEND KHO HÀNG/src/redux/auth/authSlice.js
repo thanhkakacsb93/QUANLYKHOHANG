@@ -51,7 +51,7 @@ const authSlice = createSlice({
             state.StatusSearchSupplies = false
         },
         exportSupplies: (state, { payload }) => {
-            state.dataListSuppliesCommand = dataListSuppliesCommand.push(payload)
+            state.dataListSuppliesCommand = [...state.dataListSuppliesCommand, payload]
         },
         resetState: (state) => {
             state.loginStatus = false

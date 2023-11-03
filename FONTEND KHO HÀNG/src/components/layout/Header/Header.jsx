@@ -29,7 +29,7 @@ const Header = () => {
     )
     return (
         <div className="flex flex-col gap-3">
-            <NavLink to="/repository"><span className='text-[#47bf77]'>logo/repository</span></NavLink>
+            <NavLink to="/repository"><span>logo/repository</span></NavLink>
             {/* <NavLink to="/repository/shelves"><span>shelves</span></NavLink> */}
             <NavLink to="/repository/importhistory"><span>import histori</span></NavLink>
             <NavLink to="/repository/exporthistory"><span>export history</span></NavLink>
@@ -38,10 +38,7 @@ const Header = () => {
             {
                 Roleadmin ? headerLogged : ""
             }
-            {/* <NavLink to="/repository/accounts"><span>accounts</span></NavLink> */}
-            <button onClick={handleLogout}>Logout</button>
-
-
+            <button className='bg-yellow-300' onClick={handleLogout}>Logout</button>
         </div>
     )
 }

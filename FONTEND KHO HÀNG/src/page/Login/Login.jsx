@@ -53,7 +53,7 @@ const Login = () => {
                   }
                 
                   await dispathch(saveUser(payload))
-                  console.log("idUser: ", idUser);
+                  
 
                   if (user.data.data.Role==="admin"){
                       dispathch(roleadmin())

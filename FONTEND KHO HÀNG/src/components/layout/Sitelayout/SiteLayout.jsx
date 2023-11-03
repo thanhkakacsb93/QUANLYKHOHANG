@@ -9,8 +9,8 @@ const SiteLayout = () => {
         <>
 
             <Row>
-                <Col span={4}>
-                    <div className=' bg-[red]'>
+                <Col span={4} >
+                    <div>
                         <Header />
                     </div>
                 </Col>
@@ -22,7 +22,7 @@ const SiteLayout = () => {
                 </Col>
             </Row>
 
-            <Footer />
+
 
         </>
     )

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { exportSupplies, resetsearchSupplies, searchSupplies } from '../../../redux/auth/authSlice';
 
 const ListSupplies = () => {
-    const { namerepo, idUser, StatusSearchSupplies } = useSelector((state) => state.login)
+    const { namerepo, idUser, StatusSearchSupplies, dataListSuppliesCommand } = useSelector((state) => state.login)
     const dispatch = useDispatch()
     const [form] = Form.useForm();
     const [data, setData] = useState([]);
@@ -29,7 +29,7 @@ const ListSupplies = () => {
             dataSupplies.sort((a, b) => a.NameSupplies.localeCompare(b.NameSupplies))
             const Suppliessearch = dataSupplies.map((item, index) => ({ ...item, STT: index + 1, key: item._id }))
 
-            dispatch(searchSupplies())
+            await dispatch(searchSupplies())
             setData([...Suppliessearch])
         }
         else {
@@ -149,9 +149,21 @@ const ListSupplies = () => {
             try {
                 await apiRepo.updateexport(bodyExport)
                 record.Quantity = exportValue
-                const payload = record
-                // await dispatch(exportSupplies(payload))
+                console.log("record: ", record)
+                const payload = { ...record }
+                await dispatch(exportSupplies(payload))
                 setupdateExport(!updateExport)
+                const datalocalstorage = localStorage.getItem("dataexport")
+                if (datalocalstorage) {
+                    const parsedatalocalstorage = JSON.parse(datalocalstorage)
+                    parsedatalocalstorage.push(payload)
+                    console.log("parsedatalocalstorage", parsedatalocalstorage);
+                    localStorage.setItem("dataexport", JSON.stringify(parsedatalocalstorage))
+                }
+                else {
+                    const arrdatalocalstorage = [payload]
+                    localStorage.setItem("dataexport", JSON.stringify(arrdatalocalstorage))
+                }
             } catch (error) {
                 message.error("The export quantity cannot be greater than the inventory", 2)
             }
@@ -177,11 +189,12 @@ const ListSupplies = () => {
             dataIndex: 'STT',
             width: '5%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'NameSupplies',
             dataIndex: 'NameSupplies',
-            width: '25%',
+            width: '15%',
             editable: true,
         },
         {
@@ -189,32 +202,37 @@ const ListSupplies = () => {
             dataIndex: 'NameShelves',
             width: '10%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'Unit',
             dataIndex: 'Unit',
             width: '5%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'Quantity',
             dataIndex: 'Quantity',
-            width: '10%',
+            width: '5%',
             editable: true,
+            align: 'center'
         },
 
         {
             title: 'Image',
             dataIndex: 'Image',
-            width: '20%',
+            width: '30%',
             editable: true,
+            align: 'center'
         },
         {
             title: 'export',
             dataIndex: 'export',
-            width: '40%',
+            width: '5%',
+            align: 'center',
             render: (_, record) => (
-                <Form
+                <Form className='flex flex-col gap-0 p-0'
                     onFinish={(values) => handleExport(record, values.exportValue)}>
                     <Form.Item name="exportValue">
                         <Input placeholder="Enter export value" />
@@ -229,6 +247,7 @@ const ListSupplies = () => {
         {
             title: 'operation',
             dataIndex: 'operation',
+            align: 'center',
             render: (_, record) => {
                 return (
                     <span>
@@ -251,6 +270,7 @@ const ListSupplies = () => {
                             <Typography.Link
                                 disabled={editingKey !== ''}
                                 onClick={() => edit(record)}
+                                className="m-6"
                             >
                                 Edit
                             </Typography.Link>
@@ -297,6 +317,7 @@ const ListSupplies = () => {
 
             <Form form={form} component={false}>
                 <Table
+
                     components={{
                         body: {
                             cell: EditableCell,
